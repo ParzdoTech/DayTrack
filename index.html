@@ -13,7 +13,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#242424;--txt:#f0f0f0;--txt2:#888;--teal:#1D9E75;--amber:#BA7517;--coral:#D85A30;--purple:#7F77DD;--border:#2a2a2a;--r:12px;--safe-top:env(safe-area-inset-top);--safe-bot:env(safe-area-inset-bottom)}
-body{background:var(--bg);color:var(--txt);font-family:-apple-system,sans-serif;min-height:100vh;padding:calc(var(--safe-top) + 1rem) 1rem calc(var(--safe-bot) + 5rem);max-width:480px;margin:0 auto}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,sans-serif;min-height:100vh;padding:calc(var(--safe-top)+1rem) 1rem calc(var(--safe-bot)+5rem);max-width:480px;margin:0 auto}
 h1{font-size:20px;font-weight:600;margin-bottom:2px}
 .sub{font-size:13px;color:var(--txt2);margin-bottom:1.25rem}
 .ring-wrap{display:flex;justify-content:center;margin-bottom:1.25rem;position:relative}
@@ -38,7 +38,6 @@ h1{font-size:20px;font-weight:600;margin-bottom:2px}
 .drag-track{flex:1;height:28px;background:var(--bg3);border-radius:8px;position:relative;cursor:grab;touch-action:none;overflow:hidden}
 .drag-fill{height:100%;border-radius:8px;transition:width .05s}
 .drag-val{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;pointer-events:none}
-.row-unit{font-size:11px;color:var(--txt2);width:28px;flex-shrink:0}
 .divider{height:1px;background:var(--border);margin:.625rem 0}
 .macro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:.75rem}
 .mc{background:var(--bg3);border-radius:8px;padding:.5rem;text-align:center}
@@ -54,7 +53,6 @@ input::placeholder{color:var(--txt2)}
 .biz-item{display:flex;align-items:center;gap:8px;font-size:13px;padding:4px 0}
 .biz-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--amber);cursor:pointer}
 .done{text-decoration:line-through;color:var(--txt2)}
-.rev-num{font-size:26px;font-weight:700;margin-bottom:4px}
 .food-item{display:flex;justify-content:space-between;font-size:12px;color:var(--txt2);padding:4px 0;border-bottom:1px solid var(--border)}
 .nudge{background:var(--bg2);border-radius:var(--r);padding:.875rem;margin-top:.75rem;font-size:13px;line-height:1.6;color:var(--txt2);display:none}
 .nudge-head{font-size:10px;font-weight:600;letter-spacing:.8px;color:var(--txt2);margin-bottom:6px}
@@ -73,6 +71,25 @@ input::placeholder{color:var(--txt2)}
 .unit-toggle{display:flex;gap:4px}
 .unit-btn{font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--txt2);cursor:pointer}
 .unit-btn.on{background:var(--bg3);color:var(--txt)}
+/* Business income bar */
+.inc-bar{display:flex;height:12px;border-radius:6px;overflow:hidden;margin-bottom:.875rem;gap:1px}
+.inc-seg{height:100%;transition:flex .3s}
+.inc-cats{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem}
+.cat-row{display:flex;align-items:center;gap:8px}
+.cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.cat-name{font-size:13px;flex:1}
+.cat-amt{font-size:13px;font-weight:600;min-width:50px;text-align:right}
+.cat-pct{font-size:11px;color:var(--txt2);min-width:30px;text-align:right}
+/* Settings sections */
+.set-section{background:var(--bg2);border-radius:var(--r);padding:1rem;margin-bottom:.75rem}
+.set-title{font-size:13px;font-weight:600;color:var(--txt2);margin-bottom:.75rem;letter-spacing:.3px}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:.625rem}
+.set-lbl{font-size:13px;color:var(--txt);flex:1}
+.set-row input[type=number],.set-row input[type=text]{width:90px;text-align:right}
+.cat-set-row{display:flex;align-items:center;gap:6px;margin-bottom:.5rem}
+.cat-set-row input[type=text]{flex:2}
+.cat-set-row input[type=number]{flex:1;text-align:center}
+.cat-color{width:32px;height:32px;border-radius:6px;border:none;cursor:pointer;padding:2px;background:none}
 </style>
 </head>
 <body>
@@ -96,26 +113,10 @@ input::placeholder{color:var(--txt2)}
   </div>
 
   <div class="pillars">
-    <div class="pillar" style="--p:var(--teal)" id="pW" onclick="sw('well')">
-      <div class="pillar-icon">🫀</div>
-      <div class="pillar-lbl">Wellbeing</div>
-      <div class="pillar-val" id="pvW">—</div>
-    </div>
-    <div class="pillar" style="--p:var(--amber)" id="pB" onclick="sw('biz')">
-      <div class="pillar-icon">📈</div>
-      <div class="pillar-lbl">Business</div>
-      <div class="pillar-val" id="pvB">—</div>
-    </div>
-    <div class="pillar" style="--p:var(--coral)" id="pN" onclick="sw('nut')">
-      <div class="pillar-icon">🥗</div>
-      <div class="pillar-lbl">Nutrition</div>
-      <div class="pillar-val" id="pvN">—</div>
-    </div>
-    <div class="pillar" style="--p:var(--purple)" id="pE" onclick="sw('ex')">
-      <div class="pillar-icon">💪</div>
-      <div class="pillar-lbl">Exercise</div>
-      <div class="pillar-val" id="pvE">—</div>
-    </div>
+    <div class="pillar" style="--p:var(--teal)" id="pW" onclick="sw('well')"><div class="pillar-icon">🫀</div><div class="pillar-lbl">Wellbeing</div><div class="pillar-val" id="pvW">—</div></div>
+    <div class="pillar" style="--p:var(--amber)" id="pB" onclick="sw('biz')"><div class="pillar-icon">📈</div><div class="pillar-lbl">Business</div><div class="pillar-val" id="pvB">—</div></div>
+    <div class="pillar" style="--p:var(--coral)" id="pN" onclick="sw('nut')"><div class="pillar-icon">🥗</div><div class="pillar-lbl">Nutrition</div><div class="pillar-val" id="pvN">—</div></div>
+    <div class="pillar" style="--p:var(--purple)" id="pE" onclick="sw('ex')"><div class="pillar-icon">💪</div><div class="pillar-lbl">Exercise</div><div class="pillar-val" id="pvE">—</div></div>
   </div>
 
   <div class="tabs">
@@ -128,10 +129,7 @@ input::placeholder{color:var(--txt2)}
   <!-- WELLBEING -->
   <div id="s-well">
     <div class="section">
-      <div class="sec-head">
-        <span class="sec-title">Wellbeing</span>
-        <span class="badge" style="background:#0d2b20;color:#1D9E75" id="wScore">0 / 30</span>
-      </div>
+      <div class="sec-head"><span class="sec-title">Wellbeing</span><span class="badge" style="background:#0d2b20;color:#1D9E75" id="wScore">0 / 30</span></div>
       <div id="wRows"></div>
     </div>
   </div>
@@ -139,30 +137,30 @@ input::placeholder{color:var(--txt2)}
   <!-- BUSINESS -->
   <div id="s-biz" style="display:none">
     <div class="section">
-      <div class="sec-head">
-        <span class="sec-title">Business</span>
-        <span class="badge" style="background:#2b1e08;color:#BA7517" id="bScore">0 / 30</span>
+      <div class="sec-head"><span class="sec-title">Business</span><span class="badge" style="background:#2b1e08;color:#BA7517" id="bScore">0 / 30</span></div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px">
+        <span style="font-size:26px;font-weight:700" id="bizTotalNum">$0</span>
+        <span style="font-size:12px;color:var(--txt2)">of <span id="bizTargetLbl">$500</span> target</span>
       </div>
-      <div class="rev-num" id="revNum">$0</div>
-      <div style="font-size:12px;color:var(--txt2);margin-bottom:6px">Target: <span id="revTarget">$500</span></div>
-      <div style="height:7px;background:var(--bg3);border-radius:4px;overflow:hidden"><div id="revBar" style="height:100%;background:var(--amber);width:0%;transition:width .3s"></div></div>
+      <div class="inc-bar" id="incBar"></div>
+      <div class="inc-cats" id="incCats"></div>
+      <div class="divider"></div>
+      <div style="font-size:12px;color:var(--txt2);font-weight:500;margin-bottom:.5rem">Log by category</div>
+      <div id="catLogRows"></div>
+      <div class="divider"></div>
+      <div style="font-size:12px;color:var(--txt2);font-weight:500;margin-bottom:.5rem">Log total (auto-split)</div>
+      <div class="add-row"><input type="number" id="revTotal" placeholder="Total amount $"><button class="btn" onclick="logTotal()">Split</button></div>
       <div class="divider"></div>
       <div style="font-size:12px;color:var(--txt2);font-weight:500;margin-bottom:.5rem">Tasks</div>
       <div id="taskList"></div>
       <div class="add-row"><input type="text" id="taskIn" placeholder="New task…"><button class="btn" onclick="addTask()">Add</button></div>
-      <div class="divider"></div>
-      <div style="font-size:12px;color:var(--txt2);font-weight:500;margin-bottom:.5rem">Log revenue</div>
-      <div class="add-row"><input type="number" id="revIn" placeholder="Amount $"><button class="btn" onclick="logRev()">Log</button></div>
     </div>
   </div>
 
   <!-- NUTRITION -->
   <div id="s-nut" style="display:none">
     <div class="section">
-      <div class="sec-head">
-        <span class="sec-title">Nutrition</span>
-        <span class="badge" style="background:#2b1208;color:#D85A30" id="nScore">0 / 25</span>
-      </div>
+      <div class="sec-head"><span class="sec-title">Nutrition</span><span class="badge" style="background:#2b1208;color:#D85A30" id="nScore">0 / 25</span></div>
       <div class="macro-grid">
         <div class="mc"><div class="mc-num" id="mc0">0</div><div class="mc-lbl">kcal</div></div>
         <div class="mc"><div class="mc-num" id="mc1">0g</div><div class="mc-lbl">protein</div></div>
@@ -172,16 +170,8 @@ input::placeholder{color:var(--txt2)}
       <div id="nRows"></div>
       <div class="divider"></div>
       <div style="font-size:12px;color:var(--txt2);font-weight:500;margin-bottom:.5rem">Log food</div>
-      <div class="add-row">
-        <input type="text" id="fName" placeholder="Food name…" style="flex:2">
-        <input type="number" id="fCal" placeholder="kcal">
-      </div>
-      <div class="add-row" style="margin-top:4px">
-        <input type="number" id="fPro" placeholder="protein g">
-        <input type="number" id="fCarb" placeholder="carbs g">
-        <input type="number" id="fFat" placeholder="fat g">
-        <button class="btn" onclick="logFood()">Add</button>
-      </div>
+      <div class="add-row"><input type="text" id="fName" placeholder="Food name…" style="flex:2"><input type="number" id="fCal" placeholder="kcal"></div>
+      <div class="add-row" style="margin-top:4px"><input type="number" id="fPro" placeholder="protein g"><input type="number" id="fCarb" placeholder="carbs g"><input type="number" id="fFat" placeholder="fat g"><button class="btn" onclick="logFood()">Add</button></div>
       <div id="foodLog" style="margin-top:.625rem"></div>
     </div>
   </div>
@@ -189,10 +179,7 @@ input::placeholder{color:var(--txt2)}
   <!-- EXERCISE -->
   <div id="s-ex" style="display:none">
     <div class="section">
-      <div class="sec-head">
-        <span class="sec-title">Exercise</span>
-        <span class="badge" style="background:#1a1535;color:#7F77DD" id="eScore">0 / 15</span>
-      </div>
+      <div class="sec-head"><span class="sec-title">Exercise</span><span class="badge" style="background:#1a1535;color:#7F77DD" id="eScore">0 / 15</span></div>
       <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px">
         <span style="font-size:26px;font-weight:700" id="exTotalMin">0</span>
         <span style="font-size:13px;color:var(--txt2)">min today</span>
@@ -205,10 +192,10 @@ input::placeholder{color:var(--txt2)}
         <select id="exType">
           <option value="">Select exercise…</option>
           <optgroup label="Strength">
-            <option>Bench Press</option><option>Squat</option><option>Deadlift</option><option>Pull-ups</option><option>Shoulder Press</option><option>Rows</option><option>Lunges</option><option>Dips</option>
+            <option>Bench Press</option><option>Squat</option><option>Deadlift</option><option>Pull-ups</option><option>Shoulder Press</option><option>Rows</option><option>Lunges</option><option>Dips</option><option>Bicep Curls</option><option>Tricep Pushdown</option>
           </optgroup>
           <optgroup label="Cardio">
-            <option>Running</option><option>Cycling</option><option>Jump Rope</option><option>Swimming</option><option>Rowing</option><option>Stairmaster</option>
+            <option>Running</option><option>Cycling</option><option>Jump Rope</option><option>Swimming</option><option>Rowing Machine</option><option>Stairmaster</option><option>Elliptical</option>
           </optgroup>
           <optgroup label="Flexibility">
             <option>Yoga</option><option>Stretching</option><option>Pilates</option>
@@ -216,20 +203,18 @@ input::placeholder{color:var(--txt2)}
           <option value="__custom__">+ Custom…</option>
         </select>
       </div>
+      <input type="text" id="exCustom" placeholder="Custom exercise name…" style="display:none;margin-top:6px">
       <div class="add-row" style="margin-top:4px">
-        <input type="text" id="exCustom" placeholder="Custom name…" style="display:none;flex:2">
-        <input type="number" id="exMin" placeholder="Minutes" style="flex:1">
-        <input type="number" id="exSets" placeholder="Sets" style="flex:1">
+        <input type="number" id="exMin" placeholder="Min">
+        <input type="number" id="exSets" placeholder="Sets">
+        <input type="number" id="exWeight" placeholder="kg/lbs">
         <button class="btn" onclick="logEx()">Log</button>
       </div>
     </div>
   </div>
 
   <button class="btn" style="width:100%;padding:10px" onclick="getNudge()">✨ Get AI insight</button>
-  <div class="nudge" id="nudge">
-    <div class="nudge-head">AI INSIGHT</div>
-    <div id="nudgeTxt"></div>
-  </div>
+  <div class="nudge" id="nudge"><div class="nudge-head">AI INSIGHT</div><div id="nudgeTxt"></div></div>
 </div>
 
 <!-- HISTORY -->
@@ -242,20 +227,47 @@ input::placeholder{color:var(--txt2)}
 <!-- SETTINGS -->
 <div id="pg-settings" class="pg" style="display:none">
   <h1>Settings</h1>
-  <div class="sub">Customize your targets</div>
-  <div class="section">
-    <div style="font-size:13px;color:var(--txt2);margin-bottom:.5rem">Daily revenue target ($)</div>
-    <input type="number" id="setTarget" value="500" style="margin-bottom:1rem">
-    <div style="font-size:13px;color:var(--txt2);margin-bottom:.5rem">Calorie target (kcal)</div>
-    <input type="number" id="setCal" value="2000" style="margin-bottom:1rem">
-    <div style="font-size:13px;color:var(--txt2);margin-bottom:.5rem">Protein target (g)</div>
-    <input type="number" id="setPro" value="150" style="margin-bottom:1rem">
-    <div style="font-size:13px;color:var(--txt2);margin-bottom:.5rem">Exercise target (min/day)</div>
-    <input type="number" id="setEx" value="45" style="margin-bottom:1rem">
-    <button class="btn" style="width:100%;padding:10px" onclick="saveSettings()">Save settings</button>
+  <div class="sub">Make it yours</div>
+
+  <div class="set-section">
+    <div class="set-title">TARGETS</div>
+    <div class="set-row"><span class="set-lbl">Revenue target ($)</span><input type="number" id="setTarget" value="500"></div>
+    <div class="set-row"><span class="set-lbl">Calories (kcal)</span><input type="number" id="setCal" value="2000"></div>
+    <div class="set-row"><span class="set-lbl">Protein (g)</span><input type="number" id="setPro" value="150"></div>
+    <div class="set-row"><span class="set-lbl">Carbs (g)</span><input type="number" id="setCarb" value="200"></div>
+    <div class="set-row"><span class="set-lbl">Fat (g)</span><input type="number" id="setFat" value="65"></div>
+    <div class="set-row"><span class="set-lbl">Exercise target (min)</span><input type="number" id="setEx" value="45"></div>
+    <div class="set-row"><span class="set-lbl">Sleep target (h)</span><input type="number" id="setSleep" value="8"></div>
+    <div class="set-row"><span class="set-lbl">Water target (L)</span><input type="number" id="setWater" value="2.5"></div>
   </div>
-  <div class="section" style="margin-top:.75rem">
-    <div style="font-size:13px;color:var(--txt2);margin-bottom:.5rem">Anthropic API key (for AI insights)</div>
+
+  <div class="set-section">
+    <div class="set-title">UNITS</div>
+    <div class="set-row"><span class="set-lbl">Water unit</span>
+      <div class="unit-toggle"><button class="unit-btn" id="uL" onclick="setWaterUnit('L')">L</button><button class="unit-btn" id="uml" onclick="setWaterUnit('ml')">ml</button></div>
+    </div>
+    <div class="set-row"><span class="set-lbl">Weight unit</span>
+      <div class="unit-toggle"><button class="unit-btn" id="ukg" onclick="setWeightUnit('kg')">kg</button><button class="unit-btn" id="ulbs" onclick="setWeightUnit('lbs')">lbs</button></div>
+    </div>
+    <div class="set-row"><span class="set-lbl">Currency</span><input type="text" id="setCurrency" value="$" style="width:60px;text-align:center"></div>
+  </div>
+
+  <div class="set-section">
+    <div class="set-title">INCOME CATEGORIES <span style="font-size:10px;color:var(--txt2)">(name · % split · color)</span></div>
+    <div id="catSettings"></div>
+    <button class="btn" style="width:100%;margin-top:.5rem" onclick="addCat()">+ Add category</button>
+  </div>
+
+  <div class="set-section">
+    <div class="set-title">APP NAME</div>
+    <div class="set-row"><span class="set-lbl">Display name</span><input type="text" id="setAppName" value="DayTrack"></div>
+  </div>
+
+  <button class="btn" style="width:100%;padding:11px;margin-bottom:.75rem" onclick="saveSettings()">Save all settings</button>
+
+  <div class="set-section">
+    <div class="set-title">AI INSIGHTS</div>
+    <div style="font-size:13px;color:var(--txt2);margin-bottom:.5rem">Anthropic API key</div>
     <input type="text" id="apiKey" placeholder="sk-ant-…">
     <button class="btn" style="width:100%;padding:10px;margin-top:.5rem" onclick="saveKey()">Save key</button>
     <div style="font-size:11px;color:var(--txt2);margin-top:.5rem">Stored locally on your device only.</div>
@@ -273,32 +285,43 @@ const d=new Date();
 document.getElementById('dateStr').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
 const TODAY=d.toISOString().slice(0,10);
 
-function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def}catch{return def}}
+function load(k,def){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):def}catch{return def}}
 function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
 
-let cfg=load('cfg',{target:500,cal:2000,pro:150,ex:45});
-let state=load('day-'+TODAY,{well:{sleep:0,water:0,mood:0,focus:0},biz:{rev:0,tasks:[]},nut:{foods:[],cal:0,pro:0,carb:0,fat:0},ex:{workouts:[],totalMin:0}});
-let waterUnit=load('waterUnit','L');
+const CAT_COLORS=['#BA7517','#1D9E75','#7F77DD','#D85A30','#1a7a9a'];
+const DEF_CATS=[{name:'Sales',pct:40,color:'#BA7517'},{name:'Services',pct:30,color:'#1D9E75'},{name:'Affiliate',pct:20,color:'#7F77DD'},{name:'Other',pct:10,color:'#D85A30'}];
 
-// Ensure ex exists for old saves
+let cfg=load('cfg',{target:500,cal:2000,pro:150,carb:200,fat:65,ex:45,sleep:8,water:2.5,currency:'$',appName:'DayTrack',weightUnit:'kg',cats:DEF_CATS});
+if(!cfg.cats)cfg.cats=DEF_CATS;
+if(!cfg.weightUnit)cfg.weightUnit='kg';
+if(!cfg.currency)cfg.currency='$';
+if(!cfg.carb)cfg.carb=200;
+if(!cfg.fat)cfg.fat=65;
+if(!cfg.appName)cfg.appName='DayTrack';
+
+let state=load('day-'+TODAY,{well:{sleep:0,water:0,mood:0,focus:0},biz:{cats:{},tasks:[]},nut:{foods:[],cal:0,pro:0,carb:0,fat:0},ex:{workouts:[],totalMin:0}});
 if(!state.ex)state.ex={workouts:[],totalMin:0};
+if(!state.biz.cats)state.biz.cats={};
+
+let waterUnit=load('waterUnit','L');
+let weightUnit=cfg.weightUnit||'kg';
 
 const wItems=[
-  {l:'Sleep',k:'sleep',max:10,step:.5,u:'h',color:'var(--teal)'},
-  {l:'Water',k:'water',max:waterUnit==='L'?5:5000,step:waterUnit==='L'?.25:250,u:waterUnit,color:'#1a7a9a'},
-  {l:'Mood',k:'mood',max:10,step:1,u:'/10',color:'#2a9a6a'},
-  {l:'Focus',k:'focus',max:10,step:1,u:'/10',color:'#1a6a5a'},
+  {l:'Sleep',k:'sleep',max:()=>cfg.sleep||10,step:.5,color:'var(--teal)'},
+  {l:'Water',k:'water',max:()=>waterUnit==='L'?cfg.water||5:( cfg.water||5)*1000,step:()=>waterUnit==='L'?.25:250,color:'#1a7a9a'},
+  {l:'Mood',k:'mood',max:()=>10,step:1,color:'#2a9a6a'},
+  {l:'Focus',k:'focus',max:()=>10,step:1,color:'#1a6a5a'},
 ];
 
-function wScore(){const w=state.well;return Math.round(Math.min(w.sleep/8,1)*10+Math.min((waterUnit==='L'?w.water:w.water/1000)/2.5,1)*5+Math.min(w.mood/10,1)*8+Math.min(w.focus/10,1)*7)}
-function bScore(){const b=state.biz;return Math.round(Math.min(b.rev/cfg.target,1)*22+( b.tasks.length?Math.min(b.tasks.filter(t=>t.done).length/b.tasks.length,1)*8:0))}
-function nScore(){const n=state.nut;const cv=n.cal>=1400&&n.cal<=2400?13:n.cal>0?7:0;return Math.min(25,Math.round(cv+Math.min(n.pro/cfg.pro,1)*12))}
-function eScore(){return Math.min(15,Math.round(Math.min(state.ex.totalMin/cfg.ex,1)*15))}
-
+function catTotal(){return cfg.cats.reduce((s,c)=>s+(state.biz.cats[c.name]||0),0)}
+function wScore(){const w=state.well;return Math.round(Math.min(w.sleep/(cfg.sleep||8),1)*10+Math.min((waterUnit==='L'?w.water:w.water/1000)/(cfg.water||2.5),1)*5+Math.min(w.mood/10,1)*8+Math.min(w.focus/10,1)*7)}
+function bScore(){const b=state.biz;const rv=Math.min(catTotal()/cfg.target,1)*22;const tv=b.tasks.length?Math.min(b.tasks.filter(t=>t.done).length/b.tasks.length,1)*8:0;return Math.round(rv+tv)}
+function nScore(){const n=state.nut;const cv=n.cal>=1400&&n.cal<=2400?13:n.cal>0?7:0;return Math.min(25,Math.round(cv+Math.min(n.pro/(cfg.pro||150),1)*12))}
+function eScore(){return Math.min(15,Math.round(Math.min(state.ex.totalMin/(cfg.ex||45),1)*15))}
 function persist(){save('day-'+TODAY,state)}
 
 // Drag bars
-function makeDragBar(item,onUpdate){
+function makeDragBar(item){
   const wrap=document.createElement('div');wrap.className='row';
   const lbl=document.createElement('span');lbl.className='row-lbl';lbl.textContent=item.l;
   const track=document.createElement('div');track.className='drag-track';
@@ -306,75 +329,117 @@ function makeDragBar(item,onUpdate){
   const val=document.createElement('span');val.className='drag-val';val.style.color=item.color;
   track.appendChild(fill);track.appendChild(val);
 
-  // Water unit toggle inline
-  let extra=null;
+  let extra;
   if(item.k==='water'){
     extra=document.createElement('div');extra.className='unit-toggle';
     ['L','ml'].forEach(u=>{
       const b=document.createElement('button');b.className='unit-btn'+(waterUnit===u?' on':'');b.textContent=u;
-      b.onclick=e=>{e.stopPropagation();waterUnit=u;save('waterUnit',u);rebuildWell();};
+      b.onclick=e=>{e.stopPropagation();waterUnit=u;save('waterUnit',u);renderWell();};
       extra.appendChild(b);
     });
-  }else{
-    const u=document.createElement('span');u.className='row-unit';u.textContent=item.u;extra=u;
+  } else {
+    extra=document.createElement('span');extra.style.cssText='font-size:11px;color:var(--txt2);width:28px;flex-shrink:0';
+    extra.textContent=item.k==='sleep'?'h':'/10';
   }
+
+  function getMax(){return typeof item.max==='function'?item.max():item.max}
+  function getStep(){return typeof item.step==='function'?item.step():item.step}
 
   function setVal(v){
-    const clamped=Math.max(0,Math.min(item.max,v));
-    const rounded=Math.round(clamped/item.step)*item.step;
+    const mx=getMax(),st=getStep();
+    const clamped=Math.max(0,Math.min(mx,v));
+    const rounded=Math.round(clamped/st)*st;
     state.well[item.k]=parseFloat(rounded.toFixed(2));
-    const pct=Math.round(state.well[item.k]/item.max*100);
-    fill.style.width=pct+'%';
-    val.textContent=item.k==='water'&&waterUnit==='ml'?Math.round(state.well[item.k])+'ml':state.well[item.k]+(item.k==='water'?'L':item.u);
-    onUpdate();persist();
+    fill.style.width=Math.round(state.well[item.k]/mx*100)+'%';
+    val.textContent=item.k==='water'&&waterUnit==='ml'?Math.round(state.well[item.k])+'ml':state.well[item.k]+(item.k==='water'?'L':item.k==='sleep'?'h':'/10');
+    const s=wScore();document.getElementById('wScore').textContent=s+' / 30';document.getElementById('pvW').textContent=s;updateRing();
+    persist();
   }
 
-  function fromEvent(e,rect){const x=((e.touches?e.touches[0].clientX:e.clientX)-rect.left)/rect.width;return Math.max(0,Math.min(1,x))*item.max;}
-  let dragging=false;
-  track.addEventListener('pointerdown',e=>{dragging=true;track.setPointerCapture(e.pointerId);setVal(fromEvent(e,track.getBoundingClientRect()));});
-  track.addEventListener('pointermove',e=>{if(dragging)setVal(fromEvent(e,track.getBoundingClientRect()));});
-  track.addEventListener('pointerup',()=>dragging=false);
+  function fromEvt(e,rect){return(((e.touches?e.touches[0].clientX:e.clientX)-rect.left)/rect.width)*getMax()}
+  let drag=false;
+  track.addEventListener('pointerdown',e=>{drag=true;track.setPointerCapture(e.pointerId);setVal(fromEvt(e,track.getBoundingClientRect()))});
+  track.addEventListener('pointermove',e=>{if(drag)setVal(fromEvt(e,track.getBoundingClientRect()))});
+  track.addEventListener('pointerup',()=>drag=false);
 
-  // Init
-  const pct=Math.round(state.well[item.k]/item.max*100);
-  fill.style.width=pct+'%';
-  val.textContent=item.k==='water'&&waterUnit==='ml'?Math.round(state.well[item.k])+'ml':state.well[item.k]+(item.k==='water'?'L':item.u);
+  const mx=getMax();
+  fill.style.width=Math.round(state.well[item.k]/mx*100)+'%';
+  val.textContent=item.k==='water'&&waterUnit==='ml'?Math.round(state.well[item.k])+'ml':state.well[item.k]+(item.k==='water'?'L':item.k==='sleep'?'h':'/10');
 
   wrap.appendChild(lbl);wrap.appendChild(track);wrap.appendChild(extra);
   return wrap;
 }
 
-function rebuildWell(){
-  // update water item max/step
-  wItems[1].max=waterUnit==='L'?5:5000;wItems[1].step=waterUnit==='L'?.25:250;wItems[1].u=waterUnit;
-  // convert stored value
-  renderWell();
-}
-
 function renderWell(){
   const c=document.getElementById('wRows');c.innerHTML='';
-  wItems.forEach(i=>c.appendChild(makeDragBar(i,()=>{
-    const s=wScore();document.getElementById('wScore').textContent=s+' / 30';document.getElementById('pvW').textContent=s;updateRing();
-  })));
+  wItems.forEach(i=>c.appendChild(makeDragBar(i)));
   const s=wScore();document.getElementById('wScore').textContent=s+' / 30';document.getElementById('pvW').textContent=s;updateRing();
 }
 
 function renderBiz(){
-  const b=state.biz;
-  document.getElementById('revNum').textContent='$'+b.rev.toLocaleString();
-  document.getElementById('revTarget').textContent='$'+cfg.target.toLocaleString();
-  document.getElementById('revBar').style.width=Math.min(100,Math.round(b.rev/cfg.target*100))+'%';
+  const cur=cfg.currency||'$';
+  const total=catTotal();
+  document.getElementById('bizTotalNum').textContent=cur+total.toLocaleString();
+  document.getElementById('bizTargetLbl').textContent=cur+cfg.target.toLocaleString();
+
+  // Segmented income bar
+  const bar=document.getElementById('incBar');bar.innerHTML='';
+  const totalPct=cfg.cats.reduce((s,c)=>s+c.pct,0)||100;
+  cfg.cats.forEach(c=>{
+    const seg=document.createElement('div');seg.className='inc-seg';
+    seg.style.cssText=`background:${c.color};flex:${c.pct/totalPct}`;
+    bar.appendChild(seg);
+  });
+
+  // Category list
+  const cl=document.getElementById('incCats');cl.innerHTML='';
+  cfg.cats.forEach(c=>{
+    const amt=state.biz.cats[c.name]||0;
+    const row=document.createElement('div');row.className='cat-row';
+    row.innerHTML=`<div class="cat-dot" style="background:${c.color}"></div><span class="cat-name">${c.name}</span><span class="cat-pct" style="color:${c.color}">${c.pct}%</span><span class="cat-amt">${cur}${amt.toLocaleString()}</span>`;
+    cl.appendChild(row);
+  });
+
+  // Per-category log inputs
+  const lr=document.getElementById('catLogRows');lr.innerHTML='';
+  cfg.cats.forEach(c=>{
+    const row=document.createElement('div');row.className='add-row';row.style.marginBottom='6px';
+    const inp=document.createElement('input');inp.type='number';inp.placeholder=c.name+' '+cur;inp.id='catInp-'+c.name;
+    const btn=document.createElement('button');btn.className='btn';btn.textContent='Log';btn.style.cssText=`border-color:${c.color};color:${c.color}`;
+    btn.onclick=()=>logCat(c.name);
+    row.appendChild(inp);row.appendChild(btn);
+    lr.appendChild(row);
+  });
+
+  // Tasks
   const tl=document.getElementById('taskList');tl.innerHTML='';
-  b.tasks.forEach((t,i)=>{
+  state.biz.tasks.forEach((t,i)=>{
     const div=document.createElement('div');div.className='biz-item';
     div.innerHTML=`<input type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${i})"><span class="${t.done?'done':''}">${t.label}</span>`;
     tl.appendChild(div);
   });
+
   const s=bScore();document.getElementById('bScore').textContent=s+' / 30';document.getElementById('pvB').textContent=s;updateRing();
 }
+
+function logCat(name){
+  const inp=document.getElementById('catInp-'+name);
+  const v=parseFloat(inp.value)||0;
+  if(!v)return;
+  state.biz.cats[name]=(state.biz.cats[name]||0)+v;
+  inp.value='';persist();renderBiz();
+}
+
+function logTotal(){
+  const v=parseFloat(document.getElementById('revTotal').value)||0;
+  if(!v)return;
+  const totalPct=cfg.cats.reduce((s,c)=>s+c.pct,0)||100;
+  cfg.cats.forEach(c=>{state.biz.cats[c.name]=(state.biz.cats[c.name]||0)+Math.round(v*c.pct/totalPct*100)/100});
+  document.getElementById('revTotal').value='';persist();renderBiz();
+}
+
 function addTask(){const i=document.getElementById('taskIn');if(!i.value.trim())return;state.biz.tasks.push({label:i.value.trim(),done:false});i.value='';persist();renderBiz()}
 function toggleTask(i){state.biz.tasks[i].done=!state.biz.tasks[i].done;persist();renderBiz()}
-function logRev(){const v=parseFloat(document.getElementById('revIn').value)||0;state.biz.rev+=v;document.getElementById('revIn').value='';persist();renderBiz()}
 
 function renderNut(){
   const n=state.nut;
@@ -382,12 +447,12 @@ function renderNut(){
   document.getElementById('mc1').textContent=Math.round(n.pro)+'g';
   document.getElementById('mc2').textContent=Math.round(n.carb)+'g';
   document.getElementById('mc3').textContent=Math.round(n.fat)+'g';
-  const goals=[{l:'Calories',v:n.cal,g:cfg.cal,c:'var(--coral)'},{l:'Protein',v:n.pro,g:cfg.pro,c:'#c06040'},{l:'Carbs',v:n.carb,g:200,c:'#8a5030'},{l:'Fat',v:n.fat,g:65,c:'#a06820'}];
+  const goals=[{l:'Calories',v:n.cal,g:cfg.cal,c:'var(--coral)'},{l:'Protein',v:n.pro,g:cfg.pro,c:'#c06040'},{l:'Carbs',v:n.carb,g:cfg.carb||200,c:'#8a5030'},{l:'Fat',v:n.fat,g:cfg.fat||65,c:'#a06820'}];
   const c=document.getElementById('nRows');c.innerHTML='';
   goals.forEach(g=>{
     const pct=Math.min(100,Math.round(g.v/g.g*100));
     const r=document.createElement('div');r.className='row';
-    r.innerHTML=`<span class="row-lbl">${g.l}</span><div style="flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden"><div style="height:100%;background:${g.c};width:${pct}%;border-radius:3px"></div></div><span style="font-size:12px;font-weight:500;min-width:40px;text-align:right">${Math.round(g.v)}<span style="font-size:10px;color:var(--txt2)">/${g.g}</span></span>`;
+    r.innerHTML=`<span class="row-lbl">${g.l}</span><div style="flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden"><div style="height:100%;background:${g.c};width:${pct}%;border-radius:3px"></div></div><span style="font-size:12px;font-weight:500;min-width:44px;text-align:right">${Math.round(g.v)}<span style="font-size:10px;color:var(--txt2)">/${g.g}</span></span>`;
     c.appendChild(r);
   });
   const fl=document.getElementById('foodLog');fl.innerHTML='';
@@ -406,7 +471,6 @@ function logFood(){
   persist();renderNut();
 }
 
-// Exercise type dropdown custom toggle
 document.getElementById('exType').addEventListener('change',function(){
   document.getElementById('exCustom').style.display=this.value==='__custom__'?'block':'none';
 });
@@ -418,7 +482,8 @@ function renderEx(){
   const el=document.getElementById('exList');el.innerHTML='';
   e.workouts.forEach((w,i)=>{
     const div=document.createElement('div');div.className='ex-item';
-    div.innerHTML=`<div><div class="ex-name">${w.name}</div><div class="ex-meta">${w.min} min${w.sets?' · '+w.sets+' sets':''}</div></div><button class="ex-del" onclick="delEx(${i})">✕</button>`;
+    const weightStr=w.weight?(` · ${w.weight}${weightUnit}`):'';
+    div.innerHTML=`<div><div class="ex-name">${w.name}</div><div class="ex-meta">${w.min}min${w.sets?' · '+w.sets+' sets':''}${weightStr}</div></div><button class="ex-del" onclick="delEx(${i})">✕</button>`;
     el.appendChild(div);
   });
   const s=eScore();document.getElementById('eScore').textContent=s+' / 15';document.getElementById('pvE').textContent=s;updateRing();
@@ -427,13 +492,14 @@ function logEx(){
   const sel=document.getElementById('exType');
   const custom=document.getElementById('exCustom');
   const name=sel.value==='__custom__'?custom.value.trim():sel.value;
-  if(!name||name==='')return;
+  if(!name)return;
   const min=parseFloat(document.getElementById('exMin').value)||0;
   const sets=parseInt(document.getElementById('exSets').value)||0;
-  state.ex.workouts.push({name,min,sets});
+  const weight=parseFloat(document.getElementById('exWeight').value)||0;
+  state.ex.workouts.push({name,min,sets,weight});
   state.ex.totalMin+=min;
   sel.value='';custom.value='';custom.style.display='none';
-  document.getElementById('exMin').value='';document.getElementById('exSets').value='';
+  ['exMin','exSets','exWeight'].forEach(id=>document.getElementById(id).value='');
   persist();renderEx();
 }
 function delEx(i){
@@ -469,18 +535,62 @@ function showPg(p){
   document.getElementById('pg-'+p).style.display='block';
   document.getElementById('n-'+p).classList.add('on');
   if(p==='history')renderHistory();
-  if(p==='settings'){
-    document.getElementById('setTarget').value=cfg.target;
-    document.getElementById('setCal').value=cfg.cal;
-    document.getElementById('setPro').value=cfg.pro;
-    document.getElementById('setEx').value=cfg.ex;
-    document.getElementById('apiKey').value=localStorage.getItem('apiKey')||'';
-  }
+  if(p==='settings')loadSettings();
 }
 
+function loadSettings(){
+  document.getElementById('setTarget').value=cfg.target;
+  document.getElementById('setCal').value=cfg.cal;
+  document.getElementById('setPro').value=cfg.pro;
+  document.getElementById('setCarb').value=cfg.carb||200;
+  document.getElementById('setFat').value=cfg.fat||65;
+  document.getElementById('setEx').value=cfg.ex;
+  document.getElementById('setSleep').value=cfg.sleep||8;
+  document.getElementById('setWater').value=cfg.water||2.5;
+  document.getElementById('setCurrency').value=cfg.currency||'$';
+  document.getElementById('setAppName').value=cfg.appName||'DayTrack';
+  document.getElementById('apiKey').value=localStorage.getItem('apiKey')||'';
+  document.getElementById('uL').className='unit-btn'+(waterUnit==='L'?' on':'');
+  document.getElementById('uml').className='unit-btn'+(waterUnit==='ml'?' on':'');
+  document.getElementById('ukg').className='unit-btn'+(weightUnit==='kg'?' on':'');
+  document.getElementById('ulbs').className='unit-btn'+(weightUnit==='lbs'?' on':'');
+  renderCatSettings();
+}
+
+function renderCatSettings(){
+  const c=document.getElementById('catSettings');c.innerHTML='';
+  cfg.cats.forEach((cat,i)=>{
+    const row=document.createElement('div');row.className='cat-set-row';
+    row.innerHTML=`<input type="color" class="cat-color" value="${cat.color}" onchange="cfg.cats[${i}].color=this.value">
+      <input type="text" value="${cat.name}" onchange="cfg.cats[${i}].name=this.value" placeholder="Category name">
+      <input type="number" value="${cat.pct}" min="0" max="100" onchange="cfg.cats[${i}].pct=parseInt(this.value)||0" placeholder="%">
+      <span style="font-size:11px;color:var(--txt2)">%</span>
+      <button class="btn" style="padding:6px 8px;font-size:12px" onclick="removeCat(${i})">✕</button>`;
+    c.appendChild(row);
+  });
+}
+function addCat(){if(cfg.cats.length>=5)return;cfg.cats.push({name:'New',pct:10,color:CAT_COLORS[cfg.cats.length]||'#888'});renderCatSettings()}
+function removeCat(i){cfg.cats.splice(i,1);renderCatSettings()}
+
+function setWaterUnit(u){waterUnit=u;save('waterUnit',u);document.getElementById('uL').className='unit-btn'+(u==='L'?' on':'');document.getElementById('uml').className='unit-btn'+(u==='ml'?' on':'');renderWell()}
+function setWeightUnit(u){weightUnit=u;cfg.weightUnit=u;document.getElementById('ukg').className='unit-btn'+(u==='kg'?' on':'');document.getElementById('ulbs').className='unit-btn'+(u==='lbs'?' on':'')}
+
 function saveSettings(){
-  cfg={target:parseInt(document.getElementById('setTarget').value)||500,cal:parseInt(document.getElementById('setCal').value)||2000,pro:parseInt(document.getElementById('setPro').value)||150,ex:parseInt(document.getElementById('setEx').value)||45};
-  save('cfg',cfg);renderBiz();renderNut();renderEx();alert('Saved!');
+  cfg.target=parseInt(document.getElementById('setTarget').value)||500;
+  cfg.cal=parseInt(document.getElementById('setCal').value)||2000;
+  cfg.pro=parseInt(document.getElementById('setPro').value)||150;
+  cfg.carb=parseInt(document.getElementById('setCarb').value)||200;
+  cfg.fat=parseInt(document.getElementById('setFat').value)||65;
+  cfg.ex=parseInt(document.getElementById('setEx').value)||45;
+  cfg.sleep=parseFloat(document.getElementById('setSleep').value)||8;
+  cfg.water=parseFloat(document.getElementById('setWater').value)||2.5;
+  cfg.currency=document.getElementById('setCurrency').value||'$';
+  cfg.appName=document.getElementById('setAppName').value||'DayTrack';
+  cfg.weightUnit=weightUnit;
+  save('cfg',cfg);
+  document.querySelector('h1').textContent=cfg.appName;
+  renderWell();renderBiz();renderNut();renderEx();
+  alert('Saved!');
 }
 function saveKey(){localStorage.setItem('apiKey',document.getElementById('apiKey').value.trim());alert('Key saved!')}
 
@@ -490,8 +600,9 @@ function renderHistory(){
     const dt=new Date(d);dt.setDate(d.getDate()-i);
     const key='day-'+dt.toISOString().slice(0,10);
     const s=load(key,null);if(!s&&i>0)continue;
-    const st=s||state;const tmp=state;state=st;
+    const tmp=state;state=s||state;
     if(!state.ex)state.ex={workouts:[],totalMin:0};
+    if(!state.biz.cats)state.biz.cats={};
     const ws=wScore(),bs=bScore(),ns=nScore(),es=eScore(),tot=ws+bs+ns+es;
     state=tmp;
     const div=document.createElement('div');div.className='hist-day';
@@ -506,7 +617,7 @@ async function getNudge(){
   if(!key){el.style.display='block';txt.textContent='Add your Anthropic API key in Settings to use AI insights.';return}
   el.style.display='block';txt.textContent='Thinking…';
   const ws=wScore(),bs=bScore(),ns=nScore(),es=eScore();
-  const prompt=`Scores: wellbeing ${ws}/30, business ${bs}/30, nutrition ${ns}/25, exercise ${es}/15. Sleep ${state.well.sleep}h, water ${state.well.water}${waterUnit}, mood ${state.well.mood}/10. Revenue $${state.biz.rev}. Calories ${Math.round(state.nut.cal)}, protein ${Math.round(state.nut.pro)}g. Exercise ${state.ex.totalMin}min. One specific 2-sentence tip for weakest area.`;
+  const prompt=`Scores: wellbeing ${ws}/30, biz ${bs}/30, nutrition ${ns}/25, exercise ${es}/15. Sleep ${state.well.sleep}h, water ${state.well.water}${waterUnit}, mood ${state.well.mood}/10. Revenue ${cfg.currency}${catTotal()}. Calories ${Math.round(state.nut.cal)}, protein ${Math.round(state.nut.pro)}g. Exercise ${state.ex.totalMin}min. One specific 2-sentence tip for weakest area.`;
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:80,messages:[{role:'user',content:prompt}]})});
     const data=await r.json();
@@ -514,6 +625,7 @@ async function getNudge(){
   }catch(e){txt.textContent='Could not load insight. Check your API key.'}
 }
 
+document.querySelector('h1').textContent=cfg.appName||'DayTrack';
 renderWell();renderBiz();renderNut();renderEx();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
 </script>
